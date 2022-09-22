@@ -163,12 +163,17 @@ flights_depart <- flights %>%
   left_join(airports, by = c("origin" = "faa")) 
 view(flights_depart)
 
+flights_depart$name[1]
+
 #Q2 Chicago O'hare has the most flights arriving 
 
 flights_arrive <- flights %>% 
   count(dest) %>% 
   arrange(desc(n)) %>% 
   left_join(airports, by = c("dest" = "faa")) 
+
+flights_arrive$name[1]
+
 view(flights_arrive)
 
 #Q3 Hartsfield Jackson Atlanta International airport has the most flights with arrival delays 
@@ -178,6 +183,15 @@ flights_delay <- flights %>%
   count(dest) %>% 
   arrange(desc(n)) %>%
   left_join(airports, by = c("dest" = "faa"))
+
+# I also added the total & mean time delay for each airport. ATL still has the most hours of delay, but Columbia Metropolitan has the longest average delays
+
+flights_delay2 <- flights %>% 
+  filter(!is.na(arr_delay >0)) %>%
+  group_by(dest) %>% 
+  summarize(mn.delay = mean(arr_delay),
+            sum.delay = sum(arr_delay)) %>% 
+  left_join(flights_delay, by = "dest")
 
 #Q4 Tailnumber N711MQ, Manufacturer Gulfstream Aerospace, Model G1159B, Year 1976, Type Fixed wing multi engine, 486 Flights 
 #Only include the closest plane to the top with all the details 
